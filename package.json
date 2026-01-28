@@ -14,9 +14,9 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@browserbasehq/stagehand": "latest",
+    "@browserbasehq/stagehand": "^3.0.8",
     "dotenv": "^16.4.7",
-    "openai": "^6.16.0"
+    "openai": "^4.87.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",

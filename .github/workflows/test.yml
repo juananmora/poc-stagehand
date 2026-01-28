@@ -160,8 +160,17 @@ jobs:
       # ============================================
       # NPM DEPENDENCY INSTALLATION
       # ============================================
+      # Note: Using 'npm install' instead of 'npm ci' because:
+      # 1. package-lock.json may have Windows-specific paths
+      # 2. Allows resolution of peer dependency conflicts
+      # 3. Regenerates lock file for Linux environment
       - name: Install npm dependencies
-        run: npm ci
+        run: |
+          # Remove potentially Windows-generated lock file
+          rm -f package-lock.json
+          # Install with legacy peer deps to handle zod conflicts
+          npm install --legacy-peer-deps
+          echo "✅ Dependencies installed successfully"
 
       - name: Verify Stagehand installation
         run: |
