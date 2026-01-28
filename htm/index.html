@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stagehand POC - Documentation</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ 
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#6366f1',
+        primaryTextColor: '#e2e8f0',
+        primaryBorderColor: '#818cf8',
+        lineColor: '#06b6d4',
+        secondaryColor: '#1a1a2e',
+        tertiaryColor: '#252542',
+        background: '#0f0f23',
+        mainBkg: '#1a1a2e',
+        secondBkg: '#252542',
+        border1: '#6366f1',
+        border2: '#06b6d4',
+        arrowheadColor: '#06b6d4',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '14px',
+        textColor: '#e2e8f0',
+        nodeTextColor: '#e2e8f0'
+      }
+    });
+  </script>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <a href="index.html" class="nav-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        Stagehand POC
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="architecture.html">Architecture</a></li>
+        <li><a href="functional.html">Functional</a></li>
+        <li><a href="diagrams.html">Diagrams</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content animate-fade-in">
+      <h1>AI-Powered Browser Automation</h1>
+      <p>Proof of Concept demonstrating intelligent web automation using Stagehand SDK with Large Language Models for natural language-driven browser interactions.</p>
+      <span class="badge">POC</span>
+      <span class="badge badge-info">Stagehand V3</span>
+      <span class="badge badge-success">Playwright</span>
+    </div>
+  </section>
+
+  <!-- AI Hero Image -->
+  <div class="container">
+    <div class="ai-image-container animate-glow">
+      <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=400&fit=crop" alt="AI Neural Network Visualization" class="ai-image">
+      <div class="ai-image-overlay">
+        <h3>Intelligent Automation</h3>
+        <p>Navigate websites using natural language instructions powered by AI</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Overview Section -->
+    <section class="section animate-fade-in">
+      <h2>Overview</h2>
+      <p><strong>my-stagehand-app</strong> is a Proof of Concept (POC) project that demonstrates AI-powered browser automation using Stagehand. The project automates navigation and data extraction on the Real Madrid official e-commerce store, showcasing how AI can understand and interact with web pages using natural language instructions.</p>
+      
+      <div class="card-grid">
+        <div class="card feature-card">
+          <span class="icon">🤖</span>
+          <h3>AI Navigation</h3>
+          <p>Navigate complex websites using natural language instructions instead of CSS selectors</p>
+        </div>
+        <div class="card feature-card">
+          <span class="icon">🔍</span>
+          <h3>Smart Extraction</h3>
+          <p>Extract structured data from web pages with AI-powered understanding</p>
+        </div>
+        <div class="card feature-card">
+          <span class="icon">📸</span>
+          <h3>Visual Reports</h3>
+          <p>Generate comprehensive reports with screenshots and extracted data</p>
+        </div>
+        <div class="card feature-card">
+          <span class="icon">🧪</span>
+          <h3>E2E Testing</h3>
+          <p>Playwright integration for reliable end-to-end test automation</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Documents Section -->
+    <section class="section">
+      <h2>Documentation</h2>
+      <div class="card-grid">
+        <a href="architecture.html" class="card">
+          <h3>📐 Architecture</h3>
+          <p>Technical architecture, components, dependencies, and system design decisions</p>
+        </a>
+        <a href="functional.html" class="card">
+          <h3>📋 Functional</h3>
+          <p>Product features, user flows, inputs/outputs, and error handling</p>
+        </a>
+        <a href="diagrams.html" class="card">
+          <h3>📊 Diagrams</h3>
+          <p>Visual representations of system context, component interactions, and sequence diagrams</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- System Context Diagram -->
+    <section class="section">
+      <h2>System Overview</h2>
+      <div class="diagram-container">
+        <h3 class="diagram-title">System Context Diagram</h3>
+        <div class="mermaid">
+flowchart TB
+    subgraph Users["👤 Users"]
+        Dev["Developer / QA Engineer"]
+    end
+    
+    subgraph POC["📦 my-stagehand-app"]
+        Main["Main Script<br/>(index.ts)"]
+        Tests["Test Suite<br/>(stagehand.spec.ts)"]
+    end
+    
+    subgraph External["🌐 External Services"]
+        LLM["LLM Service<br/>(Ollama / OpenAI)"]
+        Website["Target Website<br/>(shop.realmadrid.com)"]
+    end
+    
+    subgraph Outputs["📤 Generated Outputs"]
+        Reports["Markdown Reports"]
+        Screenshots["Screenshots"]
+        HTMLReport["HTML Test Report"]
+    end
+    
+    Dev -->|"npm start"| Main
+    Dev -->|"npm test"| Tests
+    Main --> LLM
+    Tests --> LLM
+    Main --> Website
+    Tests --> Website
+    Main --> Reports
+    Main --> Screenshots
+    Tests --> HTMLReport
+    Tests --> Screenshots
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section class="section">
+      <h2>Quick Start</h2>
+      <div class="quick-start">
+        <h3>🚀 Get Started in Minutes</h3>
+        <pre><code># Install dependencies
+npm install
+
+# Configure environment
+cp .env.example .env
+# Add your LLM API keys to .env
+
+# Run the automation script
+npm start
+
+# Run tests with Playwright
+npm test
+
+# View test reports
+npm run test:report</code></pre>
+      </div>
+    </section>
+
+    <!-- AI Technology Image -->
+    <section class="section">
+      <div class="ai-image-container">
+        <img src="https://images.unsplash.com/photo-1555255707-c07966088b7b?w=1200&h=350&fit=crop" alt="AI Technology Circuit Board" class="ai-image">
+        <div class="ai-image-overlay">
+          <h3>Powered by LLMs</h3>
+          <p>Compatible with OpenAI, Ollama, and other AI providers</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Status -->
+    <section class="section">
+      <h2>Project Status</h2>
+      <table class="status-table">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Core Automation</td>
+            <td><span class="status-ok">✓ Functional</span></td>
+          </tr>
+          <tr>
+            <td>Test Suite</td>
+            <td><span class="status-ok">✓ Implemented</span></td>
+          </tr>
+          <tr>
+            <td>Report Generation</td>
+            <td><span class="status-ok">✓ Working</span></td>
+          </tr>
+          <tr>
+            <td>CI/CD Integration</td>
+            <td><span class="status-pending">◐ Pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- How to Use -->
+    <section class="section">
+      <h2>How to Use This Documentation</h2>
+      <div class="card">
+        <ul class="checklist">
+          <li><strong>New developers:</strong> Start with <a href="functional.html">Functional Documentation</a> to understand the project's purpose and capabilities</li>
+          <li><strong>Technical architects:</strong> Review <a href="architecture.html">Architecture Documentation</a> for system design and integration details</li>
+          <li><strong>Visual learners:</strong> Refer to <a href="diagrams.html">Diagrams</a> for flow visualizations</li>
+          <li><strong>Quick reference:</strong> Return to this page as the central navigation point</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Stagehand POC Documentation • Built with AI-Powered Automation</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="https://github.com/browserbase/stagehand" target="_blank">Stagehand SDK</a> • 
+      <a href="https://playwright.dev/" target="_blank">Playwright</a>
+    </p>
+  </footer>
+</body>
+</html>

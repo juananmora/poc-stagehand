@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Architecture - Stagehand POC</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ 
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#6366f1',
+        primaryTextColor: '#e2e8f0',
+        primaryBorderColor: '#818cf8',
+        lineColor: '#06b6d4',
+        secondaryColor: '#1a1a2e',
+        tertiaryColor: '#252542',
+        background: '#0f0f23',
+        mainBkg: '#1a1a2e',
+        secondBkg: '#252542',
+        border1: '#6366f1',
+        border2: '#06b6d4',
+        arrowheadColor: '#06b6d4',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '14px',
+        textColor: '#e2e8f0',
+        nodeTextColor: '#e2e8f0'
+      }
+    });
+  </script>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <a href="index.html" class="nav-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        Stagehand POC
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="architecture.html" class="active">Architecture</a></li>
+        <li><a href="functional.html">Functional</a></li>
+        <li><a href="diagrams.html">Diagrams</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" style="padding: 2rem;">
+    <div class="hero-content">
+      <h1>📐 Architecture</h1>
+      <p>Technical architecture, components, dependencies, and system design decisions</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- System Overview -->
+    <section class="section animate-fade-in">
+      <h2>System Overview</h2>
+      <p>This POC implements an <strong>AI-powered browser automation system</strong> that combines <strong>Stagehand</strong> (browser automation SDK) with <strong>Large Language Models</strong> (LLMs) to create intelligent web scrapers and testers. The system understands natural language instructions to navigate websites, interact with elements, and extract structured data.</p>
+      
+      <h3>Goals</h3>
+      <div class="card-grid">
+        <div class="card">
+          <h4>🎯 Validate Stagehand</h4>
+          <p>Validate Stagehand capabilities for enterprise automation use cases</p>
+        </div>
+        <div class="card">
+          <h4>🤖 AI Navigation</h4>
+          <p>Demonstrate AI-driven navigation without hardcoded selectors</p>
+        </div>
+        <div class="card">
+          <h4>📊 Auditable Reports</h4>
+          <p>Produce auditable reports with screenshots and extracted data</p>
+        </div>
+        <div class="card">
+          <h4>🧪 Testing Patterns</h4>
+          <p>Establish testing patterns for AI-assisted E2E testing</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Architecture Image -->
+    <section class="section">
+      <div class="ai-image-container animate-glow">
+        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&h=350&fit=crop" alt="Server Architecture Data Center" class="ai-image">
+        <div class="ai-image-overlay">
+          <h3>Modern Architecture</h3>
+          <p>Built on industry-standard technologies with AI enhancement</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Components -->
+    <section class="section">
+      <h2>Components</h2>
+      
+      <h3>Core Components</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>File</th>
+            <th>Responsibility</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Main Script</strong></td>
+            <td><code>index.ts</code></td>
+            <td>Entry point for standalone automation execution</td>
+          </tr>
+          <tr>
+            <td><strong>Test Suite</strong></td>
+            <td><code>tests/stagehand.spec.ts</code></td>
+            <td>Playwright-integrated test scenarios</td>
+          </tr>
+          <tr>
+            <td><strong>Playwright Config</strong></td>
+            <td><code>playwright.config.ts</code></td>
+            <td>Test runner configuration and artifacts</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>External Dependencies</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Dependency</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>@browserbasehq/stagehand</code></td>
+            <td>AI-powered browser automation SDK</td>
+          </tr>
+          <tr>
+            <td><code>@playwright/test</code></td>
+            <td>E2E testing framework and browser control</td>
+          </tr>
+          <tr>
+            <td><code>openai</code></td>
+            <td>LLM client for AI reasoning</td>
+          </tr>
+          <tr>
+            <td><code>dotenv</code></td>
+            <td>Environment variable management</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Data Flow Diagram -->
+    <section class="section">
+      <h2>Data Flow</h2>
+      <div class="diagram-container">
+        <h3 class="diagram-title">Execution Flow</h3>
+        <div class="mermaid">
+flowchart TD
+    subgraph Input["📥 Input Layer"]
+        Dev["Developer"]
+    end
+    
+    subgraph Application["📱 Application Layer"]
+        Script["index.ts<br/>or Test"]
+    end
+    
+    subgraph StagehandSDK["🎭 Stagehand SDK"]
+        SH["Stagehand<br/>SDK"]
+    end
+    
+    subgraph AI["🧠 AI Layer"]
+        LLM["LLM Client<br/>(OpenAI/Ollama)"]
+        Interpret["AI interprets page<br/>and determines actions"]
+    end
+    
+    subgraph Browser["🌐 Browser Layer"]
+        PW["Playwright<br/>Browser"]
+    end
+    
+    subgraph Target["🎯 Target"]
+        Website["Target<br/>Website"]
+    end
+    
+    Dev -->|"npm start / npm test"| Script
+    Script -->|"Natural Language<br/>Instructions"| SH
+    SH --> LLM
+    LLM --> Interpret
+    Interpret --> PW
+    PW -->|"HTTP Requests"| Website
+    Website -->|"DOM / Screenshots"| LLM
+        </div>
+      </div>
+
+      <h3>Data Flow Steps</h3>
+      <div class="card">
+        <ol>
+          <li><strong>Instruction Input:</strong> Developer writes natural language instructions in TypeScript</li>
+          <li><strong>Stagehand Processing:</strong> SDK interprets instructions and queries LLM for page understanding</li>
+          <li><strong>LLM Reasoning:</strong> AI analyzes page DOM/screenshot to determine correct element targets</li>
+          <li><strong>Browser Execution:</strong> Playwright performs the actual browser actions</li>
+          <li><strong>Data Extraction:</strong> AI extracts requested data and returns structured responses</li>
+          <li><strong>Report Generation:</strong> Screenshots and extracted data compiled into markdown reports</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Runtime and Deployment -->
+    <section class="section">
+      <h2>Runtime and Deployment</h2>
+
+      <h3>Environment Modes</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Mode</th>
+            <th>Configuration</th>
+            <th>Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-info">LOCAL</span></td>
+            <td><code>env: "LOCAL"</code></td>
+            <td>Development and testing with local browser</td>
+          </tr>
+          <tr>
+            <td><span class="badge">BROWSERBASE</span></td>
+            <td><code>env: "BROWSERBASE"</code></td>
+            <td>Cloud-hosted browser execution</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>LLM Configuration</h3>
+      <p>The project uses a custom OpenAI client configured to work with local LLM servers (Ollama):</p>
+      <pre><code>llmClient: new CustomOpenAIClient({
+  modelName: "gpt-oss:20b-cloud",
+  client: new OpenAI({
+    apiKey: process.env.OLLAMA_API_KEY ?? "ollama",
+    baseURL: process.env.OLLAMA_API_BASE ?? "http://localhost:11434/v1",
+  }),
+})</code></pre>
+
+      <h3>Environment Variables</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Description</th>
+            <th>Default</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>OLLAMA_API_KEY</code></td>
+            <td>API key for LLM service</td>
+            <td><code>"ollama"</code></td>
+          </tr>
+          <tr>
+            <td><code>OLLAMA_API_BASE</code></td>
+            <td>Base URL for LLM API</td>
+            <td><code>http://localhost:11434/v1</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Build and Execution</h3>
+      <pre><code># Build TypeScript
+npm run build
+
+# Run main script
+npm start
+
+# Run tests
+npm test
+
+# View HTML test report
+npm run test:report</code></pre>
+
+      <h3>Output Artifacts</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Artifact</th>
+            <th>Location</th>
+            <th>Generated By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Test Reports</td>
+            <td><code>playwright-report/</code></td>
+            <td>Playwright test runner</td>
+          </tr>
+          <tr>
+            <td>Screenshots</td>
+            <td><code>reports/run-{timestamp}/</code></td>
+            <td>Main script execution</td>
+          </tr>
+          <tr>
+            <td>Execution Reports</td>
+            <td><code>reports/run-{timestamp}/report.md</code></td>
+            <td>Main script</td>
+          </tr>
+          <tr>
+            <td>Videos</td>
+            <td><code>test-results/</code></td>
+            <td>Playwright (on failure)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- AI Technology Image -->
+    <section class="section">
+      <div class="ai-image-container">
+        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&h=350&fit=crop" alt="AI Brain Neural Network" class="ai-image">
+        <div class="ai-image-overlay">
+          <h3>AI-Powered Intelligence</h3>
+          <p>Natural language understanding for browser automation</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dependencies -->
+    <section class="section">
+      <h2>Dependencies</h2>
+
+      <h3>Production Dependencies</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th>Version</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>@browserbasehq/stagehand</code></td>
+            <td>latest</td>
+            <td>Core automation SDK with AI capabilities</td>
+          </tr>
+          <tr>
+            <td><code>dotenv</code></td>
+            <td>^16.4.7</td>
+            <td>Load environment variables from <code>.env</code> files</td>
+          </tr>
+          <tr>
+            <td><code>openai</code></td>
+            <td>^6.16.0</td>
+            <td>OpenAI-compatible LLM client</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Development Dependencies</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th>Version</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>@playwright/test</code></td>
+            <td>^1.55.0</td>
+            <td>E2E testing framework</td>
+          </tr>
+          <tr>
+            <td><code>tsx</code></td>
+            <td>^4.19.2</td>
+            <td>TypeScript execution without compilation</td>
+          </tr>
+          <tr>
+            <td><code>typescript</code></td>
+            <td>^5.0.0</td>
+            <td>TypeScript compiler</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Why These Dependencies?</h3>
+      <div class="card">
+        <ul>
+          <li><strong>Stagehand:</strong> Enables natural language browser automation, reducing brittle CSS/XPath selectors</li>
+          <li><strong>Playwright:</strong> Industry-standard browser automation with excellent debugging tools</li>
+          <li><strong>OpenAI Client:</strong> Provides compatibility with OpenAI API and local alternatives (Ollama)</li>
+          <li><strong>tsx:</strong> Allows running TypeScript directly without build step during development</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Key Decisions -->
+    <section class="section">
+      <h2>Key Decisions</h2>
+
+      <div class="card">
+        <h3>1. Natural Language Over Selectors</h3>
+        <p><strong>Decision:</strong> Use AI-interpreted instructions instead of CSS/XPath selectors</p>
+        <p><strong>Rationale:</strong></p>
+        <ul>
+          <li>Reduces maintenance when UI changes</li>
+          <li>More readable and business-aligned test descriptions</li>
+          <li>Enables non-technical stakeholders to understand automation logic</li>
+        </ul>
+        <p><span class="badge badge-warning">Trade-off</span> Execution is slower and requires LLM API access</p>
+      </div>
+
+      <div class="card">
+        <h3>2. Local LLM Support</h3>
+        <p><strong>Decision:</strong> Configure OpenAI client to support local LLM servers (Ollama)</p>
+        <p><strong>Rationale:</strong></p>
+        <ul>
+          <li>Reduces API costs during development</li>
+          <li>Enables offline development and testing</li>
+          <li>Supports air-gapped enterprise environments</li>
+        </ul>
+        <p><span class="badge badge-warning">Trade-off</span> Local models may have lower accuracy than cloud-hosted alternatives</p>
+      </div>
+
+      <div class="card">
+        <h3>3. Hybrid Testing Approach</h3>
+        <p><strong>Decision:</strong> Combine Stagehand AI actions with Playwright assertions</p>
+        <p><strong>Rationale:</strong></p>
+        <ul>
+          <li>Leverages AI for flexible element targeting</li>
+          <li>Uses deterministic Playwright assertions for reliability</li>
+          <li>Produces standard test reports compatible with CI/CD tools</li>
+        </ul>
+        <p><span class="badge badge-warning">Trade-off</span> Test complexity increases with two abstraction layers</p>
+      </div>
+
+      <div class="card">
+        <h3>4. Report Generation with Screenshots</h3>
+        <p><strong>Decision:</strong> Capture screenshots at each navigation step</p>
+        <p><strong>Rationale:</strong></p>
+        <ul>
+          <li>Provides visual evidence of automation execution</li>
+          <li>Helps debug failures by showing actual page state</li>
+          <li>Creates documentation artifacts automatically</li>
+        </ul>
+        <p><span class="badge badge-warning">Trade-off</span> Increases storage requirements and execution time</p>
+      </div>
+
+      <div class="card">
+        <h3>5. Modular Test Helpers</h3>
+        <p><strong>Decision:</strong> Implement reusable helper functions (<code>actWithRetry</code>, <code>safeAct</code>, <code>expectExtractContains</code>)</p>
+        <p><strong>Rationale:</strong></p>
+        <ul>
+          <li>Handles flaky AI responses with retry logic</li>
+          <li>Standardizes error handling and artifact attachment</li>
+          <li>Reduces test code duplication</li>
+        </ul>
+        <p><span class="badge badge-warning">Trade-off</span> Additional abstraction layer to maintain</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Stagehand POC Documentation • Architecture</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="index.html">← Back to Home</a>
+    </p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagrams - Stagehand POC</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ 
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#6366f1',
+        primaryTextColor: '#e2e8f0',
+        primaryBorderColor: '#818cf8',
+        lineColor: '#06b6d4',
+        secondaryColor: '#1a1a2e',
+        tertiaryColor: '#252542',
+        background: '#0f0f23',
+        mainBkg: '#1a1a2e',
+        secondBkg: '#252542',
+        border1: '#6366f1',
+        border2: '#06b6d4',
+        arrowheadColor: '#06b6d4',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '14px',
+        textColor: '#e2e8f0',
+        nodeTextColor: '#e2e8f0',
+        actorTextColor: '#e2e8f0',
+        actorBkg: '#6366f1',
+        actorBorder: '#818cf8',
+        actorLineColor: '#06b6d4',
+        signalColor: '#06b6d4',
+        signalTextColor: '#e2e8f0',
+        labelBoxBkgColor: '#1a1a2e',
+        labelBoxBorderColor: '#6366f1',
+        labelTextColor: '#e2e8f0',
+        loopTextColor: '#e2e8f0',
+        noteBorderColor: '#f472b6',
+        noteBkgColor: '#252542',
+        noteTextColor: '#e2e8f0',
+        activationBorderColor: '#06b6d4',
+        activationBkgColor: '#252542',
+        sequenceNumberColor: '#e2e8f0'
+      }
+    });
+  </script>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <a href="index.html" class="nav-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        Stagehand POC
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="architecture.html">Architecture</a></li>
+        <li><a href="functional.html">Functional</a></li>
+        <li><a href="diagrams.html" class="active">Diagrams</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" style="padding: 2rem;">
+    <div class="hero-content">
+      <h1>📊 Diagrams</h1>
+      <p>Visual representations of system architecture, flows, and interactions</p>
+      <span class="badge">10 Mermaid Diagrams</span>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Diagram Index -->
+    <section class="section animate-fade-in">
+      <h2>Diagram Index</h2>
+      <div class="card-grid">
+        <a href="#system-context" class="card">
+          <h4>1. System Context</h4>
+          <p>External actors and systems</p>
+        </a>
+        <a href="#component-diagram" class="card">
+          <h4>2. Component Diagram</h4>
+          <p>Internal module relationships</p>
+        </a>
+        <a href="#main-execution" class="card">
+          <h4>3. Main Execution Flow</h4>
+          <p>npm start sequence</p>
+        </a>
+        <a href="#test-execution" class="card">
+          <h4>4. Test Execution Flow</h4>
+          <p>npm test sequence</p>
+        </a>
+        <a href="#stagehand-methods" class="card">
+          <h4>5. Stagehand Methods</h4>
+          <p>act/extract/observe flow</p>
+        </a>
+        <a href="#error-handling" class="card">
+          <h4>6. Error Handling</h4>
+          <p>Retry logic flow</p>
+        </a>
+        <a href="#report-generation" class="card">
+          <h4>7. Report Generation</h4>
+          <p>Report assembly process</p>
+        </a>
+        <a href="#user-journey" class="card">
+          <h4>8. User Journey</h4>
+          <p>E-commerce navigation</p>
+        </a>
+        <a href="#state-diagram" class="card">
+          <h4>9. State Diagram</h4>
+          <p>Test execution states</p>
+        </a>
+        <a href="#deployment" class="card">
+          <h4>10. Deployment Architecture</h4>
+          <p>Local vs cloud execution</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- AI Image -->
+    <section class="section">
+      <div class="ai-image-container animate-glow">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=300&fit=crop" alt="Data Visualization Dashboard" class="ai-image">
+        <div class="ai-image-overlay">
+          <h3>Visual Documentation</h3>
+          <p>Interactive Mermaid diagrams for better understanding</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- System Context -->
+    <section class="section" id="system-context">
+      <h2>1. System Context</h2>
+      <p>Overview of how the POC system interacts with external components.</p>
+      <div class="mermaid">
+flowchart TB
+    subgraph Users["👤 Users"]
+        Dev["Developer / QA Engineer"]
+    end
+    
+    subgraph POC["📦 my-stagehand-app"]
+        Main["Main Script<br/>(index.ts)"]
+        Tests["Test Suite<br/>(stagehand.spec.ts)"]
+    end
+    
+    subgraph External["🌐 External Services"]
+        LLM["LLM Service<br/>(Ollama / OpenAI)"]
+        Website["Target Website<br/>(shop.realmadrid.com)"]
+    end
+    
+    subgraph Outputs["📤 Generated Outputs"]
+        Reports["Markdown Reports"]
+        Screenshots["Screenshots"]
+        HTMLReport["HTML Test Report"]
+    end
+    
+    Dev -->|"npm start"| Main
+    Dev -->|"npm test"| Tests
+    Main --> LLM
+    Tests --> LLM
+    Main --> Website
+    Tests --> Website
+    Main --> Reports
+    Main --> Screenshots
+    Tests --> HTMLReport
+    Tests --> Screenshots
+      </div>
+    </section>
+
+    <!-- Component Diagram -->
+    <section class="section" id="component-diagram">
+      <h2>2. Component Diagram</h2>
+      <p>Internal structure and relationships between components.</p>
+      <div class="mermaid">
+flowchart LR
+    subgraph Application["📱 Application Layer"]
+        index["index.ts"]
+        test["stagehand.spec.ts"]
+    end
+    
+    subgraph SDK["🎭 Stagehand SDK"]
+        Stagehand["Stagehand Class"]
+        Act["act()"]
+        Extract["extract()"]
+        Observe["observe()"]
+        Context["V3Context"]
+    end
+    
+    subgraph LLMClient["🧠 LLM Integration"]
+        CustomClient["CustomOpenAIClient"]
+        OpenAI["OpenAI Client"]
+    end
+    
+    subgraph Browser["🌐 Browser Layer"]
+        Playwright["Playwright"]
+        Page["Page Object"]
+        BrowserCtx["Browser Context"]
+    end
+    
+    index --> Stagehand
+    test --> Stagehand
+    Stagehand --> Act
+    Stagehand --> Extract
+    Stagehand --> Observe
+    Stagehand --> Context
+    Act --> CustomClient
+    Extract --> CustomClient
+    Observe --> CustomClient
+    CustomClient --> OpenAI
+    Context --> BrowserCtx
+    BrowserCtx --> Page
+    Page --> Playwright
+      </div>
+    </section>
+
+    <!-- Main Execution Flow -->
+    <section class="section" id="main-execution">
+      <h2>3. Main Execution Flow</h2>
+      <p>Sequence diagram for the main script (<code>npm start</code>).</p>
+      <div class="mermaid">
+sequenceDiagram
+    actor Dev as Developer
+    participant Main as index.ts
+    participant SH as Stagehand
+    participant LLM as LLM Service
+    participant Browser as Playwright Browser
+    participant Site as Real Madrid Shop
+    participant FS as File System
+    
+    Dev->>Main: npm start
+    Main->>SH: new Stagehand(config)
+    Main->>SH: init()
+    SH->>Browser: Launch browser
+    Browser-->>SH: Browser ready
+    
+    Main->>Browser: goto(players URL)
+    Browser->>Site: HTTP Request
+    Site-->>Browser: Page loaded
+    
+    Main->>SH: act("Accept cookies")
+    SH->>LLM: Analyze page + instruction
+    LLM-->>SH: Element to click
+    SH->>Browser: Click element
+    Main->>Browser: screenshot()
+    Browser-->>FS: Save 01-accepted-cookies.png
+    
+    Main->>SH: act("Open Carvajal page")
+    SH->>LLM: Analyze page + instruction
+    LLM-->>SH: Link to click
+    SH->>Browser: Click link
+    Browser->>Site: Navigate
+    Main->>Browser: screenshot()
+    Browser-->>FS: Save 02-dani-carvajal-page.png
+    
+    Main->>SH: extract("Product info")
+    SH->>LLM: Analyze page + extraction request
+    LLM-->>SH: Structured data
+    SH-->>Main: availability data
+    
+    Main->>FS: writeFile(report.md)
+    Main->>SH: close()
+    SH->>Browser: Close browser
+    Main-->>Dev: Execution complete
+      </div>
+    </section>
+
+    <!-- Test Execution Flow -->
+    <section class="section" id="test-execution">
+      <h2>4. Test Execution Flow</h2>
+      <p>Sequence diagram for Playwright test execution (<code>npm test</code>).</p>
+      <div class="mermaid">
+sequenceDiagram
+    actor Dev as Developer
+    participant PW as Playwright Runner
+    participant Test as stagehand.spec.ts
+    participant SH as Stagehand
+    participant LLM as LLM Service
+    participant Browser as Browser
+    
+    Dev->>PW: npm test
+    PW->>Test: Load test file
+    PW->>Test: Run test
+    
+    Test->>SH: new Stagehand(config)
+    Test->>SH: init()
+    SH->>Browser: Launch browser
+    
+    rect rgb(99, 102, 241, 0.1)
+        Note over Test,Browser: Step: Open players list
+        Test->>Browser: goto(URL)
+        Test->>Test: attachShot("01-players-list")
+    end
+    
+    rect rgb(6, 182, 212, 0.1)
+        Note over Test,Browser: Step: Accept cookies
+        Test->>SH: observe("Find cookie button")
+        SH->>LLM: Analyze page
+        LLM-->>SH: Actions array
+        Test->>SH: act(matchedAction)
+        SH->>Browser: Click accept
+    end
+    
+    rect rgb(244, 114, 182, 0.1)
+        Note over Test,Browser: Step: Extract data
+        Test->>SH: extract("Availability")
+        Test->>SH: extract("Summary")
+        Test->>Test: attach("results.txt")
+    end
+    
+    Test->>SH: close()
+    SH->>Browser: Close browser
+    Test-->>PW: Test complete
+    PW->>PW: Generate HTML report
+    PW-->>Dev: Results + Report
+      </div>
+    </section>
+
+    <!-- Stagehand Methods -->
+    <section class="section" id="stagehand-methods">
+      <h2>5. Stagehand Method Flow</h2>
+      <p>How Stagehand methods interact with the LLM and browser.</p>
+      <div class="mermaid">
+flowchart TD
+    subgraph Input["📝 Developer Input"]
+        Instruction["Natural Language<br/>Instruction"]
+    end
+    
+    subgraph Stagehand["🎭 Stagehand Processing"]
+        Act["act()"]
+        Extract["extract()"]
+        Observe["observe()"]
+    end
+    
+    subgraph LLMProcessing["🧠 LLM Processing"]
+        PageAnalysis["Analyze Page<br/>DOM/Screenshot"]
+        ElementID["Identify Target<br/>Element"]
+        DataExtract["Extract Requested<br/>Data"]
+        ActionPlan["Plan Available<br/>Actions"]
+    end
+    
+    subgraph BrowserActions["🌐 Browser Actions"]
+        Click["Click Element"]
+        Type["Type Text"]
+        Navigate["Navigate"]
+    end
+    
+    subgraph Output["📤 Output"]
+        Result["Execution Result"]
+        Data["Extracted Data"]
+        Actions["Action Candidates"]
+    end
+    
+    Instruction --> Act
+    Instruction --> Extract
+    Instruction --> Observe
+    
+    Act --> PageAnalysis
+    Extract --> PageAnalysis
+    Observe --> PageAnalysis
+    
+    PageAnalysis --> ElementID
+    PageAnalysis --> DataExtract
+    PageAnalysis --> ActionPlan
+    
+    ElementID --> Click
+    ElementID --> Type
+    ElementID --> Navigate
+    
+    DataExtract --> Data
+    ActionPlan --> Actions
+    
+    Click --> Result
+    Type --> Result
+    Navigate --> Result
+      </div>
+    </section>
+
+    <!-- AI Image -->
+    <section class="section">
+      <div class="ai-image-container">
+        <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&h=300&fit=crop" alt="Matrix Code Data Flow" class="ai-image">
+        <div class="ai-image-overlay">
+          <h3>Data Flows</h3>
+          <p>Understanding how information moves through the system</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Error Handling -->
+    <section class="section" id="error-handling">
+      <h2>6. Error Handling Flow</h2>
+      <p>How errors are handled with retry logic.</p>
+      <div class="mermaid">
+flowchart TD
+    Start["🚀 Start Action"] --> TryAction["Execute stagehand.act()"]
+    TryAction --> Success{Success?}
+    
+    Success -->|Yes| Return["✅ Return Result"]
+    Success -->|No| CheckRetry{Retries<br/>Remaining?}
+    
+    CheckRetry -->|Yes| IncrementAttempt["Increment Attempt<br/>Counter"]
+    IncrementAttempt --> Wait["⏳ Wait (optional)"]
+    Wait --> TryAction
+    
+    CheckRetry -->|No| CaptureError["📸 Capture Error<br/>Artifacts"]
+    CaptureError --> AttachScreenshot["Attach Screenshot"]
+    AttachScreenshot --> AttachError["Attach Error Text"]
+    AttachError --> Throw["❌ Throw Error /<br/>Fail Test"]
+    
+    style Start fill:#10b981
+    style Return fill:#10b981
+    style Throw fill:#ef4444
+      </div>
+    </section>
+
+    <!-- Report Generation -->
+    <section class="section" id="report-generation">
+      <h2>7. Report Generation Flow</h2>
+      <p>How the markdown report is assembled.</p>
+      <div class="mermaid">
+flowchart LR
+    subgraph Execution["⚡ Execution Phase"]
+        Nav1["Step 1:<br/>Cookies"]
+        Nav2["Step 2:<br/>Player Page"]
+        Nav3["Step 3:<br/>Product Page"]
+        Nav4["Step 4:<br/>Size Selection"]
+    end
+    
+    subgraph Screenshots["📸 Screenshots"]
+        SS1["01-cookies.png"]
+        SS2["02-player.png"]
+        SS3["03-product.png"]
+        SS4["04-size.png"]
+    end
+    
+    subgraph Data["📊 Extracted Data"]
+        Avail["Product Name<br/>Price<br/>Size L Status"]
+        Summary["2-4 Sentence<br/>Description"]
+    end
+    
+    subgraph Report["📄 report.md"]
+        Header["# Reporte"]
+        Meta["## Ejecucion"]
+        Navigation["## Navegacion"]
+        Product["## Producto"]
+        Resumen["## Resumen"]
+    end
+    
+    Nav1 --> SS1
+    Nav2 --> SS2
+    Nav3 --> SS3
+    Nav4 --> SS4
+    
+    SS1 --> Navigation
+    SS2 --> Navigation
+    SS3 --> Navigation
+    SS4 --> Navigation
+    Avail --> Product
+    Summary --> Resumen
+      </div>
+    </section>
+
+    <!-- User Journey -->
+    <section class="section" id="user-journey">
+      <h2>8. User Journey: E-Commerce Navigation</h2>
+      <p>Visual representation of the automated user journey on the Real Madrid shop.</p>
+      <div class="mermaid">
+journey
+    title Real Madrid Shop Automation Journey
+    section Landing
+      Open Players Page: 5: Automation
+      View Cookie Dialog: 3: Website
+      Accept Cookies: 5: Automation
+    section Player Selection
+      Browse Players List: 4: Automation
+      Find Dani Carvajal: 5: Automation
+      Open Player Profile: 5: Automation
+    section Product Selection
+      View Player Products: 4: Website
+      Select Authentic Kit: 5: Automation
+      Open Product Page: 5: Automation
+    section Product Configuration
+      View Product Details: 4: Website
+      Select Size L: 5: Automation
+      Verify Availability: 5: Automation
+    section Data Collection
+      Extract Product Info: 5: Automation
+      Generate Summary: 5: Automation
+      Create Report: 5: Automation
+      </div>
+    </section>
+
+    <!-- State Diagram -->
+    <section class="section" id="state-diagram">
+      <h2>9. State Diagram: Test Execution States</h2>
+      <p>States during test execution lifecycle.</p>
+      <div class="mermaid">
+stateDiagram-v2
+    [*] --> Initializing: npm test
+    
+    Initializing --> BrowserLaunched: Stagehand.init()
+    
+    BrowserLaunched --> NavigatingToSite: page.goto()
+    
+    NavigatingToSite --> HandlingCookies: Page loaded
+    
+    HandlingCookies --> PlayerPageNavigation: Cookies accepted
+    HandlingCookies --> PlayerPageNavigation: No cookies dialog
+    
+    PlayerPageNavigation --> PlayerPageVerification: Clicked Carvajal
+    
+    PlayerPageVerification --> ProductPageNavigation: Player confirmed
+    PlayerPageVerification --> Failed: Player not found
+    
+    ProductPageNavigation --> ProductVerification: Clicked product
+    
+    ProductVerification --> SizeSelection: Product confirmed
+    ProductVerification --> Failed: Product not found
+    
+    SizeSelection --> DataExtraction: Size L selected
+    
+    DataExtraction --> ReportGeneration: Data extracted
+    
+    ReportGeneration --> Cleanup: Report saved
+    
+    Cleanup --> [*]: Browser closed
+    
+    Failed --> Cleanup: Capture artifacts
+      </div>
+    </section>
+
+    <!-- Deployment Architecture -->
+    <section class="section" id="deployment">
+      <h2>10. Deployment Architecture</h2>
+      <p>Local vs cloud execution options.</p>
+      <div class="mermaid">
+flowchart TB
+    subgraph Development["💻 Development Environment"]
+        Code["TypeScript Code"]
+        EnvFile[".env Configuration"]
+    end
+    
+    subgraph LocalExecution["🏠 Local Execution"]
+        NodeJS["Node.js Runtime"]
+        Playwright["Playwright Browser"]
+        OllamaLocal["Ollama LLM<br/>(Local)"]
+    end
+    
+    subgraph CloudExecution["☁️ Cloud Execution"]
+        BrowserBase["BrowserBase<br/>Cloud Browsers"]
+        OpenAICloud["OpenAI API<br/>(Cloud)"]
+    end
+    
+    subgraph CI_CD["🔄 CI/CD Pipeline"]
+        GitHub["GitHub Actions /<br/>Azure DevOps"]
+        TestRunner["Playwright<br/>Test Runner"]
+        ArtifactStorage["Artifact Storage"]
+    end
+    
+    Code --> NodeJS
+    EnvFile --> NodeJS
+    
+    NodeJS --> Playwright
+    NodeJS --> OllamaLocal
+    
+    NodeJS -.->|"env: BROWSERBASE"| BrowserBase
+    NodeJS -.->|"OpenAI API Key"| OpenAICloud
+    
+    Code --> GitHub
+    GitHub --> TestRunner
+    TestRunner --> ArtifactStorage
+      </div>
+    </section>
+
+    <!-- Summary -->
+    <section class="section">
+      <h2>Diagram Summary</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Diagram</th>
+            <th>Type</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>System Context</td>
+            <td><code>flowchart TB</code></td>
+            <td>External actors and systems</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Component Diagram</td>
+            <td><code>flowchart LR</code></td>
+            <td>Internal module relationships</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Main Execution Flow</td>
+            <td><code>sequenceDiagram</code></td>
+            <td>npm start sequence</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Test Execution Flow</td>
+            <td><code>sequenceDiagram</code></td>
+            <td>npm test sequence</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Stagehand Methods</td>
+            <td><code>flowchart TD</code></td>
+            <td>act/extract/observe flow</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Error Handling</td>
+            <td><code>flowchart TD</code></td>
+            <td>Retry logic flow</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>Report Generation</td>
+            <td><code>flowchart LR</code></td>
+            <td>Report assembly process</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>User Journey</td>
+            <td><code>journey</code></td>
+            <td>E-commerce navigation</td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td>State Diagram</td>
+            <td><code>stateDiagram-v2</code></td>
+            <td>Test execution states</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>Deployment</td>
+            <td><code>flowchart TB</code></td>
+            <td>Local vs cloud execution</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Stagehand POC Documentation • Diagrams</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="index.html">← Back to Home</a> • 
+      All diagrams rendered with <a href="https://mermaid.js.org/" target="_blank">Mermaid.js</a>
+    </p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Functional Documentation - Stagehand POC</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ 
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#6366f1',
+        primaryTextColor: '#e2e8f0',
+        primaryBorderColor: '#818cf8',
+        lineColor: '#06b6d4',
+        secondaryColor: '#1a1a2e',
+        tertiaryColor: '#252542',
+        background: '#0f0f23',
+        mainBkg: '#1a1a2e',
+        secondBkg: '#252542',
+        border1: '#6366f1',
+        border2: '#06b6d4',
+        arrowheadColor: '#06b6d4',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '14px',
+        textColor: '#e2e8f0',
+        nodeTextColor: '#e2e8f0'
+      }
+    });
+  </script>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <a href="index.html" class="nav-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        Stagehand POC
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="architecture.html">Architecture</a></li>
+        <li><a href="functional.html" class="active">Functional</a></li>
+        <li><a href="diagrams.html">Diagrams</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" style="padding: 2rem;">
+    <div class="hero-content">
+      <h1>📋 Functional Documentation</h1>
+      <p>Product features, user flows, inputs/outputs, and error handling</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Product Purpose -->
+    <section class="section animate-fade-in">
+      <h2>Product Purpose</h2>
+      
+      <div class="card">
+        <h3>Problem Statement</h3>
+        <p>Traditional web automation relies on brittle CSS selectors and XPath expressions that break when websites update their UI. This creates significant maintenance overhead and reduces the reliability of automated tests and data extraction processes.</p>
+      </div>
+
+      <div class="card" style="border-color: var(--secondary);">
+        <h3>Solution</h3>
+        <p>This POC demonstrates <strong>AI-powered browser automation</strong> using Stagehand, which interprets natural language instructions to interact with web pages. Instead of targeting elements by technical selectors, the automation describes what it wants to do in plain language, and the AI determines the appropriate actions.</p>
+      </div>
+
+      <h3>Target Users</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>User Type</th>
+            <th>Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>QA Engineers</strong></td>
+            <td>Writing maintainable E2E tests with natural language</td>
+          </tr>
+          <tr>
+            <td><strong>Data Engineers</strong></td>
+            <td>Building resilient web scrapers</td>
+          </tr>
+          <tr>
+            <td><strong>Business Analysts</strong></td>
+            <td>Understanding automation logic without code expertise</td>
+          </tr>
+          <tr>
+            <td><strong>Developers</strong></td>
+            <td>Rapid prototyping of web automation workflows</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- AI Image -->
+    <section class="section">
+      <div class="ai-image-container animate-glow">
+        <img src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=1200&h=350&fit=crop" alt="AI Robot Assistant" class="ai-image">
+        <div class="ai-image-overlay">
+          <h3>Natural Language Interface</h3>
+          <p>Describe what you want, and AI handles the complexity</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Features -->
+    <section class="section">
+      <h2>Core Features</h2>
+
+      <div class="card">
+        <h3>🧭 Feature 1: AI-Driven Navigation</h3>
+        <p><strong>Description:</strong> Navigate web pages using natural language instructions instead of hardcoded selectors.</p>
+        <pre><code>await stagehand.act("Open the Dani Carvajal player page");</code></pre>
+        <p><strong>Benefits:</strong></p>
+        <ul>
+          <li>Survives UI changes without code modifications</li>
+          <li>Self-documenting automation scripts</li>
+          <li>Reduced time-to-implementation</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>🔍 Feature 2: Intelligent Data Extraction</h3>
+        <p><strong>Description:</strong> Extract structured data from pages by describing what information is needed.</p>
+        <pre><code>const availability = await stagehand.extract(
+  "Report the product name, price, and whether size L is available"
+);</code></pre>
+        <p><strong>Benefits:</strong></p>
+        <ul>
+          <li>No need to parse HTML manually</li>
+          <li>AI understands page context and relationships</li>
+          <li>Returns human-readable summaries</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>📸 Feature 3: Visual Evidence Capture</h3>
+        <p><strong>Description:</strong> Automatically capture screenshots at each step for reporting and debugging.</p>
+        <pre><code>const capture = async (label: string) => {
+  await page.screenshot({ path: `${runDir}/${label}.png`, fullPage: true });
+};</code></pre>
+        <p><strong>Benefits:</strong></p>
+        <ul>
+          <li>Visual audit trail of execution</li>
+          <li>Faster debugging of failures</li>
+          <li>Documentation artifacts generated automatically</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>🔄 Feature 4: Resilient Action Execution</h3>
+        <p><strong>Description:</strong> Retry failed actions with the <code>observe + act</code> pattern and built-in retry logic.</p>
+        <pre><code>const actWithRetry = async (instruction: string, retries = 2) => {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await stagehand.act(instruction);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError;
+};</code></pre>
+        <p><strong>Benefits:</strong></p>
+        <ul>
+          <li>Handles transient failures gracefully</li>
+          <li>Reduces false negatives in test suites</li>
+          <li>Configurable retry policies</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>📄 Feature 5: Markdown Report Generation</h3>
+        <p><strong>Description:</strong> Generate comprehensive markdown reports with embedded screenshots and extracted data.</p>
+        <pre><code># Reporte de prueba
+
+## Ejecucion
+- URL: https://shop.realmadrid.com/content/players
+- Fecha: 2025-01-28T10:30:00.000Z
+
+## Navegacion (con screenshots)
+1. Aceptar cookies
+![](./01-accepted-cookies.png)</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>🧪 Feature 6: Playwright Test Integration</h3>
+        <p><strong>Description:</strong> Run AI-powered automation within the Playwright test framework for CI/CD integration.</p>
+        <p><strong>Benefits:</strong></p>
+        <ul>
+          <li>Standard test reporting (HTML, JSON, JUnit)</li>
+          <li>Video recording on failure</li>
+          <li>Trace files for debugging</li>
+          <li>Compatible with existing CI/CD pipelines</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- User Flows -->
+    <section class="section">
+      <h2>User Flows</h2>
+
+      <div class="card">
+        <h3>Flow 1: Standalone Automation Script</h3>
+        <p><strong>Entry Point:</strong> <code>npm start</code></p>
+        <div class="mermaid">
+flowchart LR
+    A[Initialize Stagehand] --> B[Open Browser]
+    B --> C[Navigate to URL]
+    C --> D[Accept Cookies]
+    D --> E[Navigate Player Page]
+    E --> F[Open Product]
+    F --> G[Select Size]
+    G --> H[Extract Data]
+    H --> I[Generate Report]
+    I --> J[Close Browser]
+        </div>
+        <p><strong>Output:</strong> <code>reports/run-{timestamp}/report.md</code></p>
+      </div>
+
+      <div class="card">
+        <h3>Flow 2: Playwright Test Execution</h3>
+        <p><strong>Entry Point:</strong> <code>npm test</code></p>
+        <div class="mermaid">
+flowchart LR
+    A[Load Test Config] --> B[Initialize Stagehand]
+    B --> C[Execute Test Steps]
+    C --> D[Run Assertions]
+    D --> E[Capture Artifacts]
+    E --> F[Generate HTML Report]
+        </div>
+        <p><strong>Output:</strong> <code>playwright-report/index.html</code></p>
+      </div>
+
+      <div class="card">
+        <h3>Flow 3: Development Iteration</h3>
+        <p><strong>Entry Point:</strong> Manual development workflow</p>
+        <div class="mermaid">
+flowchart LR
+    A[Modify Code] --> B[Run npm start/test]
+    B --> C[Review Output]
+    C --> D{Success?}
+    D -->|No| A
+    D -->|Yes| E[Validate Report]
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Technology Image -->
+    <section class="section">
+      <div class="ai-image-container">
+        <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&h=350&fit=crop" alt="Robot Technology" class="ai-image">
+        <div class="ai-image-overlay">
+          <h3>Automated Workflows</h3>
+          <p>From development to production with AI assistance</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Inputs and Outputs -->
+    <section class="section">
+      <h2>Inputs and Outputs</h2>
+
+      <h3>System Inputs</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Input</th>
+            <th>Type</th>
+            <th>Source</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Natural Language Instructions</td>
+            <td>String</td>
+            <td>Code</td>
+            <td>Actions for AI to perform</td>
+          </tr>
+          <tr>
+            <td>Environment Variables</td>
+            <td>Config</td>
+            <td><code>.env</code> file</td>
+            <td>LLM API keys and endpoints</td>
+          </tr>
+          <tr>
+            <td>Target URL</td>
+            <td>String</td>
+            <td>Code</td>
+            <td>Website to automate</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>System Outputs</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Output</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Console Logs</td>
+            <td>Text</td>
+            <td>stdout</td>
+            <td>Execution progress and extracted data</td>
+          </tr>
+          <tr>
+            <td>Screenshots</td>
+            <td>PNG</td>
+            <td><code>reports/</code> or <code>test-results/</code></td>
+            <td>Visual captures at each step</td>
+          </tr>
+          <tr>
+            <td>Markdown Report</td>
+            <td>MD</td>
+            <td><code>reports/run-{timestamp}/report.md</code></td>
+            <td>Comprehensive execution summary</td>
+          </tr>
+          <tr>
+            <td>HTML Report</td>
+            <td>HTML</td>
+            <td><code>playwright-report/</code></td>
+            <td>Interactive test results</td>
+          </tr>
+          <tr>
+            <td>Video Recording</td>
+            <td>WebM</td>
+            <td><code>test-results/</code></td>
+            <td>Full execution video (on failure)</td>
+          </tr>
+          <tr>
+            <td>Trace File</td>
+            <td>Zip</td>
+            <td><code>test-results/</code></td>
+            <td>Playwright trace for debugging</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Expected Behaviors</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Expected Behavior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Successful navigation</td>
+            <td>AI identifies and clicks correct elements</td>
+          </tr>
+          <tr>
+            <td>Cookie consent dialog</td>
+            <td>Automatically accepted if detected</td>
+          </tr>
+          <tr>
+            <td>Element not found</td>
+            <td>Retry with different approach or fail with error</td>
+          </tr>
+          <tr>
+            <td>Data extraction</td>
+            <td>Returns structured text/object with requested information</td>
+          </tr>
+          <tr>
+            <td>Test assertion failure</td>
+            <td>Captures screenshot and attaches to report</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Error Handling -->
+    <section class="section">
+      <h2>Error Handling</h2>
+
+      <h3>Error Categories</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Example</th>
+            <th>Handling Strategy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-warning">Navigation</span></td>
+            <td>Page not found, timeout</td>
+            <td>Retry navigation, capture screenshot, fail test</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-warning">Element</span></td>
+            <td>AI cannot locate element</td>
+            <td>Retry with alternative instruction, use observe pattern</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-warning">LLM API</span></td>
+            <td>Rate limit, network failure</td>
+            <td>Retry request, fallback to cached response</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-warning">Assertion</span></td>
+            <td>Extracted data doesn't match</td>
+            <td>Attach extraction result and screenshot for debugging</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-warning">Browser</span></td>
+            <td>Memory overflow, unexpected close</td>
+            <td>Test framework handles cleanup, retry execution</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Error Handling Flow</h3>
+      <div class="mermaid">
+flowchart TD
+    Start["Start Action"] --> TryAction["Execute stagehand.act()"]
+    TryAction --> Success{Success?}
+    
+    Success -->|Yes| Return["Return Result"]
+    Success -->|No| CheckRetry{Retries<br/>Remaining?}
+    
+    CheckRetry -->|Yes| IncrementAttempt["Increment Attempt<br/>Counter"]
+    IncrementAttempt --> Wait["Wait (optional)"]
+    Wait --> TryAction
+    
+    CheckRetry -->|No| CaptureError["Capture Error<br/>Artifacts"]
+    CaptureError --> AttachScreenshot["Attach Screenshot"]
+    AttachScreenshot --> AttachError["Attach Error Text"]
+    AttachError --> Throw["Throw Error /<br/>Fail Test"]
+    
+    style Start fill:#10b981
+    style Return fill:#10b981
+    style Throw fill:#ef4444
+      </div>
+
+      <h3>Error Artifacts</h3>
+      <div class="card">
+        <p>When errors occur, the following artifacts are captured:</p>
+        <ol>
+          <li><strong>Screenshot:</strong> Current page state at failure</li>
+          <li><strong>Extracted Text:</strong> AI's response attached as text file</li>
+          <li><strong>Error Message:</strong> Full error stack trace</li>
+          <li><strong>Video:</strong> Complete execution recording (test mode)</li>
+          <li><strong>Trace:</strong> Playwright trace file for step-by-step debugging</li>
+        </ol>
+      </div>
+
+      <h3>Graceful Degradation</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Situation</th>
+            <th>Fallback Behavior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>observe</code> fails to find element</td>
+            <td>Falls back to direct <code>act</code> call</td>
+          </tr>
+          <tr>
+            <td>AI extraction returns unexpected format</td>
+            <td>Normalizes to string representation</td>
+          </tr>
+          <tr>
+            <td>Screenshot capture fails</td>
+            <td>Continues execution, logs warning</td>
+          </tr>
+          <tr>
+            <td>Report generation fails</td>
+            <td>Logs error, does not crash main process</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Test Scenarios -->
+    <section class="section">
+      <h2>Test Scenarios</h2>
+
+      <div class="card">
+        <h3>Primary Test: "navegacion y disponibilidad con Stagehand"</h3>
+        <p><strong>Objective:</strong> Validate end-to-end navigation and data extraction flow</p>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Step</th>
+              <th>Action</th>
+              <th>Assertion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Open players list page</td>
+              <td>Page loads successfully</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Accept cookies</td>
+              <td>Cookie dialog dismissed</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Open Carvajal page</td>
+              <td>Player name "Carvajal" visible</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Open product page</td>
+              <td>Product name matches target</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Verify Carvajal association</td>
+              <td>Player name in customization</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>Select size L</td>
+              <td>Size selection confirmed</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Extract availability</td>
+              <td>Product data captured</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>Extract summary</td>
+              <td>Description generated</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Success Criteria:</strong></p>
+        <ul class="checklist">
+          <li>All assertions pass</li>
+          <li>Screenshots captured at each step</li>
+          <li>Extracted data contains expected fields</li>
+          <li>Test completes within 240 second timeout</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Stagehand POC Documentation • Functional</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="index.html">← Back to Home</a>
+    </p>
+  </footer>
+</body>
+</html>
