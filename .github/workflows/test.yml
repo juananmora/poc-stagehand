@@ -13,23 +13,31 @@
 #   - tsx: TypeScript execution
 #   - typescript: TypeScript compiler
 #
-# System dependencies (via playwright install):
-#   - Chromium browser
-#   - Browser dependencies (fonts, libs, etc.)
+# System dependencies:
+#   - Chromium browser (via playwright install)
+#   - Ollama (optional, for local LLM)
 #
 # ============================================
-# REQUIRED SECRETS
+# LLM OPTIONS
 # ============================================
-#   - OPENAI_API_KEY: OpenAI API key for LLM (or compatible API)
-#   - OLLAMA_API_KEY: (optional) If using Ollama-compatible endpoint
-#   - OLLAMA_API_BASE: (optional) Custom LLM endpoint URL
+# Option 1: OpenAI API (default, requires OPENAI_API_KEY secret)
+# Option 2: Ollama local (select via workflow_dispatch, no API key needed)
+#
+# ============================================
+# REQUIRED SECRETS (for OpenAI mode)
+# ============================================
+#   - OPENAI_API_KEY: OpenAI API key
 #
 # ============================================
 # SETUP INSTRUCTIONS
 # ============================================
-# 1. Go to GitHub repo > Settings > Secrets and variables > Actions
-# 2. Add secret: OPENAI_API_KEY with your OpenAI API key
-# 3. (Optional) Add OLLAMA_API_BASE for custom LLM endpoint
+# For OpenAI:
+#   1. Go to GitHub repo > Settings > Secrets and variables > Actions
+#   2. Add secret: OPENAI_API_KEY with your OpenAI API key
+#
+# For Ollama:
+#   1. Run workflow manually with llm_provider = "ollama"
+#   2. No secrets needed (runs locally in CI)
 
 name: Playwright Tests
 
@@ -40,6 +48,19 @@ on:
     branches: [main, master]
   workflow_dispatch:
     inputs:
+      llm_provider:
+        type: choice
+        description: 'LLM Provider'
+        required: true
+        default: 'openai'
+        options:
+          - openai
+          - ollama
+      ollama_model:
+        type: string
+        description: 'Ollama model (only if llm_provider=ollama)'
+        required: false
+        default: 'qwen2.5:0.5b'
       debug_enabled:
         type: boolean
         description: 'Run with debug logging'
@@ -52,16 +73,16 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Node version to use
   NODE_VERSION: '20'
-  # Playwright version (should match package.json)
-  PLAYWRIGHT_VERSION: '1.55.0'
+  # Default to OpenAI for push/PR, can be overridden via workflow_dispatch
+  LLM_PROVIDER: ${{ inputs.llm_provider || 'openai' }}
+  OLLAMA_MODEL: ${{ inputs.ollama_model || 'qwen2.5:0.5b' }}
 
 jobs:
   test:
-    name: Run Playwright Tests
+    name: Run Playwright Tests (${{ inputs.llm_provider || 'openai' }})
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       # ============================================
@@ -77,16 +98,68 @@ jobs:
           cache: 'npm'
 
       # ============================================
-      # DEPENDENCY INSTALLATION
+      # OLLAMA INSTALLATION (conditional)
       # ============================================
-      
-      # Install all npm dependencies including:
-      # - @browserbasehq/stagehand (AI browser automation)
-      # - @playwright/test (E2E testing framework)
-      # - openai (LLM client)
-      # - dotenv (environment variables)
-      # - tsx (TypeScript execution)
-      # - typescript (compiler)
+      - name: Install Ollama
+        if: env.LLM_PROVIDER == 'ollama'
+        run: |
+          echo "============================================"
+          echo "INSTALLING OLLAMA"
+          echo "============================================"
+          curl -fsSL https://ollama.com/install.sh | sh
+          echo "Ollama installed successfully"
+          ollama --version
+
+      - name: Start Ollama server
+        if: env.LLM_PROVIDER == 'ollama'
+        run: |
+          echo "Starting Ollama server in background..."
+          ollama serve &
+          
+          # Wait for server to be ready
+          echo "Waiting for Ollama server to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
+              echo "✅ Ollama server is ready!"
+              break
+            fi
+            echo "Waiting... ($i/30)"
+            sleep 2
+          done
+          
+          # Verify server is running
+          if ! curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
+            echo "❌ Ollama server failed to start"
+            exit 1
+          fi
+
+      - name: Pull Ollama model
+        if: env.LLM_PROVIDER == 'ollama'
+        run: |
+          echo "============================================"
+          echo "PULLING OLLAMA MODEL: ${{ env.OLLAMA_MODEL }}"
+          echo "============================================"
+          echo "This may take a few minutes..."
+          ollama pull ${{ env.OLLAMA_MODEL }}
+          echo ""
+          echo "Available models:"
+          ollama list
+
+      - name: Verify Ollama is working
+        if: env.LLM_PROVIDER == 'ollama'
+        run: |
+          echo "Testing Ollama with a simple prompt..."
+          curl -s http://localhost:11434/api/generate -d '{
+            "model": "${{ env.OLLAMA_MODEL }}",
+            "prompt": "Say hello",
+            "stream": false
+          }' | jq -r '.response' | head -c 200
+          echo ""
+          echo "✅ Ollama is working!"
+
+      # ============================================
+      # NPM DEPENDENCY INSTALLATION
+      # ============================================
       - name: Install npm dependencies
         run: npm ci
 
@@ -98,13 +171,15 @@ jobs:
           npm ls openai
           echo "✅ All critical dependencies installed"
 
+      # ============================================
+      # PLAYWRIGHT BROWSER INSTALLATION
+      # ============================================
       - name: Get Playwright version
         id: playwright-version
         run: |
           PLAYWRIGHT_VERSION=$(npm ls @playwright/test --json | jq -r '.dependencies["@playwright/test"].version // .devDependencies["@playwright/test"].version')
           echo "version=$PLAYWRIGHT_VERSION" >> $GITHUB_OUTPUT
 
-      # Cache Playwright browsers
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         id: playwright-cache
@@ -123,13 +198,24 @@ jobs:
       # ============================================
       # ENVIRONMENT CONFIGURATION
       # ============================================
-      - name: Create .env file
+      - name: Create .env file (OpenAI)
+        if: env.LLM_PROVIDER == 'openai'
         run: |
           cat > .env << EOF
-          # LLM Configuration for CI
+          # OpenAI Configuration
           OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-          OLLAMA_API_KEY=${{ secrets.OLLAMA_API_KEY || 'ollama' }}
-          OLLAMA_API_BASE=${{ secrets.OLLAMA_API_BASE || 'https://api.openai.com/v1' }}
+          OLLAMA_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          OLLAMA_API_BASE=https://api.openai.com/v1
+          EOF
+
+      - name: Create .env file (Ollama)
+        if: env.LLM_PROVIDER == 'ollama'
+        run: |
+          cat > .env << EOF
+          # Ollama Local Configuration
+          OLLAMA_API_KEY=ollama
+          OLLAMA_API_BASE=http://localhost:11434/v1
+          OLLAMA_MODEL=${{ env.OLLAMA_MODEL }}
           EOF
 
       - name: Verify environment and dependencies
@@ -142,26 +228,27 @@ jobs:
           echo "Working directory: $(pwd)"
           echo ""
           echo "============================================"
+          echo "LLM CONFIGURATION"
+          echo "============================================"
+          echo "LLM Provider: ${{ env.LLM_PROVIDER }}"
+          if [ "${{ env.LLM_PROVIDER }}" == "ollama" ]; then
+            echo "Ollama Model: ${{ env.OLLAMA_MODEL }}"
+            echo "Ollama Endpoint: http://localhost:11434"
+            echo "Ollama Status: $(curl -s http://localhost:11434/api/tags | jq -r '.models | length') models available"
+          else
+            echo "OpenAI Endpoint: https://api.openai.com/v1"
+            echo "API Key configured: ${{ secrets.OPENAI_API_KEY != '' && 'Yes' || 'No' }}"
+          fi
+          echo ""
+          echo "============================================"
           echo "INSTALLED PACKAGES"
           echo "============================================"
           echo "Playwright: $(npx playwright --version)"
-          echo "Stagehand: $(npm ls @browserbasehq/stagehand --depth=0 2>/dev/null | grep stagehand || echo 'installed')"
-          echo "OpenAI SDK: $(npm ls openai --depth=0 2>/dev/null | grep openai || echo 'installed')"
-          echo ""
-          echo "============================================"
-          echo "LLM CONFIGURATION"
-          echo "============================================"
-          echo "LLM endpoint: ${{ secrets.OLLAMA_API_BASE != '' && 'Custom endpoint' || 'OpenAI API' }}"
-          echo "API key configured: ${{ secrets.OPENAI_API_KEY != '' && 'Yes' || 'No' }}"
-          echo ""
-          echo "============================================"
-          echo "BROWSER INFO"
-          echo "============================================"
-          npx playwright --version
-          echo "Chromium path: $(npx playwright install --dry-run chromium 2>&1 | head -5 || echo 'cached')"
+          npm ls @browserbasehq/stagehand --depth=0 2>/dev/null || echo "Stagehand: installed"
+          npm ls openai --depth=0 2>/dev/null || echo "OpenAI SDK: installed"
 
       # ============================================
-      # BUILD (if needed)
+      # BUILD
       # ============================================
       - name: Build TypeScript
         run: npm run build
@@ -175,10 +262,11 @@ jobs:
         env:
           CI: true
           DEBUG: ${{ inputs.debug_enabled && 'pw:api' || '' }}
-          # Pass secrets as environment variables
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
-          OLLAMA_API_BASE: ${{ secrets.OLLAMA_API_BASE }}
+          # OpenAI configuration
+          OPENAI_API_KEY: ${{ env.LLM_PROVIDER == 'openai' && secrets.OPENAI_API_KEY || 'ollama' }}
+          # Ollama configuration (used by the app)
+          OLLAMA_API_KEY: ${{ env.LLM_PROVIDER == 'ollama' && 'ollama' || secrets.OPENAI_API_KEY }}
+          OLLAMA_API_BASE: ${{ env.LLM_PROVIDER == 'ollama' && 'http://localhost:11434/v1' || 'https://api.openai.com/v1' }}
 
       # ============================================
       # UPLOAD ARTIFACTS
@@ -187,7 +275,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report
+          name: playwright-report-${{ env.LLM_PROVIDER }}
           path: playwright-report/
           retention-days: 30
 
@@ -195,7 +283,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results
+          name: test-results-${{ env.LLM_PROVIDER }}
           path: test-results/
           retention-days: 30
 
@@ -203,10 +291,20 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: execution-reports
+          name: execution-reports-${{ env.LLM_PROVIDER }}
           path: reports/
           retention-days: 30
           if-no-files-found: ignore
+
+      # ============================================
+      # CLEANUP (Ollama)
+      # ============================================
+      - name: Stop Ollama server
+        if: always() && env.LLM_PROVIDER == 'ollama'
+        run: |
+          echo "Stopping Ollama server..."
+          pkill ollama || true
+          echo "Ollama server stopped"
 
       # ============================================
       # SUMMARY
@@ -214,7 +312,12 @@ jobs:
       - name: Add test summary to GitHub
         if: always()
         run: |
-          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "## Test Results (${{ env.LLM_PROVIDER }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**LLM Provider:** ${{ env.LLM_PROVIDER }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ env.LLM_PROVIDER }}" == "ollama" ]; then
+            echo "**Ollama Model:** ${{ env.OLLAMA_MODEL }}" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "" >> $GITHUB_STEP_SUMMARY
           if [ -f test-results/results.json ]; then
             PASSED=$(jq '.stats.expected // 0' test-results/results.json)
@@ -229,34 +332,4 @@ jobs:
             echo "No test results found" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 [View full report](../artifacts/playwright-report)" >> $GITHUB_STEP_SUMMARY
-
-  # ============================================
-  # OPTIONAL: Deploy report to GitHub Pages
-  # ============================================
-  # deploy-report:
-  #   name: Deploy Report to GitHub Pages
-  #   needs: test
-  #   if: always() && github.ref == 'refs/heads/main'
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     pages: write
-  #     id-token: write
-  #   
-  #   steps:
-  #     - name: Download report
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: playwright-report
-  #         path: ./report
-  #     
-  #     - name: Setup Pages
-  #       uses: actions/configure-pages@v4
-  #     
-  #     - name: Upload to Pages
-  #       uses: actions/upload-pages-artifact@v3
-  #       with:
-  #         path: ./report
-  #     
-  #     - name: Deploy to Pages
-  #       uses: actions/deploy-pages@v4
+          echo "📊 [View full report](../artifacts/playwright-report-${{ env.LLM_PROVIDER }})" >> $GITHUB_STEP_SUMMARY
