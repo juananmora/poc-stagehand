@@ -166,8 +166,10 @@ jobs:
       # 3. Regenerates lock file for Linux environment
       - name: Install npm dependencies
         run: |
-          # Remove potentially Windows-generated lock file
+          # Remove Windows-specific configurations
           rm -f package-lock.json
+          rm -f .npmrc
+          
           # Install with legacy peer deps to handle zod conflicts
           npm install --legacy-peer-deps
           echo "✅ Dependencies installed successfully"
