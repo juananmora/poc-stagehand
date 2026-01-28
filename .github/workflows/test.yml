@@ -273,6 +273,8 @@ jobs:
         env:
           CI: true
           DEBUG: ${{ inputs.debug_enabled && 'pw:api' || '' }}
+          # LLM Model configuration
+          LLM_MODEL: ${{ env.LLM_PROVIDER == 'openai' && 'gpt-4o' || env.OLLAMA_MODEL }}
           # OpenAI configuration
           OPENAI_API_KEY: ${{ env.LLM_PROVIDER == 'openai' && secrets.OPENAI_API_KEY || 'ollama' }}
           # Ollama configuration (used by the app)

@@ -6,15 +6,27 @@ import { CustomOpenAIClient, Stagehand } from "@browserbasehq/stagehand";
 test("navegacion y disponibilidad con Stagehand", async ({}, testInfo) => {
   test.setTimeout(240000);
 
+  const isCI = process.env.CI === "true";
+
   const stagehand = new Stagehand({
     env: "LOCAL",
+    headless: isCI, // Headless en CI, con interfaz en local
     localBrowserLaunchOptions: {
       viewport: { width: 1280, height: 720 },
+      args: isCI
+        ? [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu",
+            "--single-process",
+          ]
+        : [],
     },
     llmClient: new CustomOpenAIClient({
-      modelName: "qwen3-coder:480b-cloud",
+      modelName: process.env.LLM_MODEL ?? "qwen3-coder:480b-cloud",
       client: new OpenAI({
-        apiKey: process.env.OLLAMA_API_KEY ?? "ollama",
+        apiKey: process.env.OPENAI_API_KEY ?? process.env.OLLAMA_API_KEY ?? "ollama",
         baseURL: process.env.OLLAMA_API_BASE ?? "http://localhost:11434/v1",
       }) as unknown as any,
     }),
@@ -22,7 +34,7 @@ test("navegacion y disponibilidad con Stagehand", async ({}, testInfo) => {
 
   await stagehand.init();
   const page = stagehand.context.pages()[0];
-  await page.setViewportSize(1280, 720);
+  await page.setViewportSize({ width: 1280, height: 720 });
   const productName = "Camiseta Authentic Hombre Primera Equipación Blanca 25/26";
 
   const actWithRetry = async (instruction: string, retries = 2) => {
@@ -38,7 +50,7 @@ test("navegacion y disponibilidad con Stagehand", async ({}, testInfo) => {
   };
 
   const attachShot = async (label: string) => {
-    await page.setViewportSize(1280, 720);
+    await page.setViewportSize({ width: 1280, height: 720 });
     const buffer = await page.screenshot({ fullPage: true });
     await testInfo.attach(`${label}.png`, {
       body: buffer,
