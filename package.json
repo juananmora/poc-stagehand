@@ -5,7 +5,13 @@
     "build": "node ./node_modules/typescript/bin/tsc",
     "start": "node ./node_modules/tsx/dist/cli.mjs index.ts",
     "test": "playwright test",
-    "test:report": "playwright show-report"
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "test:ci": "CI=true playwright test",
+    "playwright:install": "playwright install --with-deps chromium",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@browserbasehq/stagehand": "latest",

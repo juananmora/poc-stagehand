@@ -1,0 +1,262 @@
+# Stagehand POC - CI/CD Pipeline
+# 
+# This workflow runs Playwright tests with Stagehand AI automation
+#
+# ============================================
+# DEPENDENCIES INSTALLED
+# ============================================
+# NPM packages (via npm ci):
+#   - @browserbasehq/stagehand: AI-powered browser automation SDK
+#   - @playwright/test: E2E testing framework
+#   - openai: OpenAI-compatible LLM client
+#   - dotenv: Environment variable management
+#   - tsx: TypeScript execution
+#   - typescript: TypeScript compiler
+#
+# System dependencies (via playwright install):
+#   - Chromium browser
+#   - Browser dependencies (fonts, libs, etc.)
+#
+# ============================================
+# REQUIRED SECRETS
+# ============================================
+#   - OPENAI_API_KEY: OpenAI API key for LLM (or compatible API)
+#   - OLLAMA_API_KEY: (optional) If using Ollama-compatible endpoint
+#   - OLLAMA_API_BASE: (optional) Custom LLM endpoint URL
+#
+# ============================================
+# SETUP INSTRUCTIONS
+# ============================================
+# 1. Go to GitHub repo > Settings > Secrets and variables > Actions
+# 2. Add secret: OPENAI_API_KEY with your OpenAI API key
+# 3. (Optional) Add OLLAMA_API_BASE for custom LLM endpoint
+
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run with debug logging'
+        required: false
+        default: false
+
+# Cancel in-progress runs for the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Node version to use
+  NODE_VERSION: '20'
+  # Playwright version (should match package.json)
+  PLAYWRIGHT_VERSION: '1.55.0'
+
+jobs:
+  test:
+    name: Run Playwright Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # ============================================
+      # CHECKOUT & SETUP
+      # ============================================
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      # ============================================
+      # DEPENDENCY INSTALLATION
+      # ============================================
+      
+      # Install all npm dependencies including:
+      # - @browserbasehq/stagehand (AI browser automation)
+      # - @playwright/test (E2E testing framework)
+      # - openai (LLM client)
+      # - dotenv (environment variables)
+      # - tsx (TypeScript execution)
+      # - typescript (compiler)
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Verify Stagehand installation
+        run: |
+          echo "Checking installed packages..."
+          npm ls @browserbasehq/stagehand
+          npm ls @playwright/test
+          npm ls openai
+          echo "✅ All critical dependencies installed"
+
+      - name: Get Playwright version
+        id: playwright-version
+        run: |
+          PLAYWRIGHT_VERSION=$(npm ls @playwright/test --json | jq -r '.dependencies["@playwright/test"].version // .devDependencies["@playwright/test"].version')
+          echo "version=$PLAYWRIGHT_VERSION" >> $GITHUB_OUTPUT
+
+      # Cache Playwright browsers
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      # ============================================
+      # ENVIRONMENT CONFIGURATION
+      # ============================================
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          # LLM Configuration for CI
+          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          OLLAMA_API_KEY=${{ secrets.OLLAMA_API_KEY || 'ollama' }}
+          OLLAMA_API_BASE=${{ secrets.OLLAMA_API_BASE || 'https://api.openai.com/v1' }}
+          EOF
+
+      - name: Verify environment and dependencies
+        run: |
+          echo "============================================"
+          echo "ENVIRONMENT"
+          echo "============================================"
+          echo "Node version: $(node -v)"
+          echo "NPM version: $(npm -v)"
+          echo "Working directory: $(pwd)"
+          echo ""
+          echo "============================================"
+          echo "INSTALLED PACKAGES"
+          echo "============================================"
+          echo "Playwright: $(npx playwright --version)"
+          echo "Stagehand: $(npm ls @browserbasehq/stagehand --depth=0 2>/dev/null | grep stagehand || echo 'installed')"
+          echo "OpenAI SDK: $(npm ls openai --depth=0 2>/dev/null | grep openai || echo 'installed')"
+          echo ""
+          echo "============================================"
+          echo "LLM CONFIGURATION"
+          echo "============================================"
+          echo "LLM endpoint: ${{ secrets.OLLAMA_API_BASE != '' && 'Custom endpoint' || 'OpenAI API' }}"
+          echo "API key configured: ${{ secrets.OPENAI_API_KEY != '' && 'Yes' || 'No' }}"
+          echo ""
+          echo "============================================"
+          echo "BROWSER INFO"
+          echo "============================================"
+          npx playwright --version
+          echo "Chromium path: $(npx playwright install --dry-run chromium 2>&1 | head -5 || echo 'cached')"
+
+      # ============================================
+      # BUILD (if needed)
+      # ============================================
+      - name: Build TypeScript
+        run: npm run build
+        continue-on-error: true
+
+      # ============================================
+      # RUN TESTS
+      # ============================================
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          CI: true
+          DEBUG: ${{ inputs.debug_enabled && 'pw:api' || '' }}
+          # Pass secrets as environment variables
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
+          OLLAMA_API_BASE: ${{ secrets.OLLAMA_API_BASE }}
+
+      # ============================================
+      # UPLOAD ARTIFACTS
+      # ============================================
+      - name: Upload Playwright HTML Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 30
+
+      - name: Upload execution reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: execution-reports
+          path: reports/
+          retention-days: 30
+          if-no-files-found: ignore
+
+      # ============================================
+      # SUMMARY
+      # ============================================
+      - name: Add test summary to GitHub
+        if: always()
+        run: |
+          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f test-results/results.json ]; then
+            PASSED=$(jq '.stats.expected // 0' test-results/results.json)
+            FAILED=$(jq '.stats.unexpected // 0' test-results/results.json)
+            SKIPPED=$(jq '.stats.skipped // 0' test-results/results.json)
+            echo "| Status | Count |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| ✅ Passed | $PASSED |" >> $GITHUB_STEP_SUMMARY
+            echo "| ❌ Failed | $FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| ⏭️ Skipped | $SKIPPED |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No test results found" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [View full report](../artifacts/playwright-report)" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================
+  # OPTIONAL: Deploy report to GitHub Pages
+  # ============================================
+  # deploy-report:
+  #   name: Deploy Report to GitHub Pages
+  #   needs: test
+  #   if: always() && github.ref == 'refs/heads/main'
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     pages: write
+  #     id-token: write
+  #   
+  #   steps:
+  #     - name: Download report
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: playwright-report
+  #         path: ./report
+  #     
+  #     - name: Setup Pages
+  #       uses: actions/configure-pages@v4
+  #     
+  #     - name: Upload to Pages
+  #       uses: actions/upload-pages-artifact@v3
+  #       with:
+  #         path: ./report
+  #     
+  #     - name: Deploy to Pages
+  #       uses: actions/deploy-pages@v4
