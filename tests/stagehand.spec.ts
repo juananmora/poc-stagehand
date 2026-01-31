@@ -24,7 +24,7 @@ test("navegacion y disponibilidad con Stagehand", async ({}, testInfo) => {
         : [],
     },
     llmClient: new CustomOpenAIClient({
-      modelName: process.env.LLM_MODEL ?? "qwen3-coder:480b-cloud",
+      modelName: process.env.LLM_MODEL ?? "gpt-oss:20b-cloud",
       client: new OpenAI({
         apiKey: process.env.OPENAI_API_KEY ?? process.env.OLLAMA_API_KEY ?? "ollama",
         baseURL: process.env.OLLAMA_API_BASE ?? "http://localhost:11434/v1",
