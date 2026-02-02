@@ -138,9 +138,9 @@ npm run test:report
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| `@browserbasehq/stagehand` | latest | Core automation SDK with AI capabilities |
+| `@browserbasehq/stagehand` | ^3.0.8 | Core automation SDK with AI capabilities |
 | `dotenv` | ^16.4.7 | Load environment variables from `.env` files |
-| `openai` | ^6.16.0 | OpenAI-compatible LLM client |
+| `openai` | ^4.87.0 | OpenAI-compatible LLM client |
 
 ### Development Dependencies
 
