@@ -65,7 +65,9 @@ async function main() {
   });
 
   console.log("\n" + "=".repeat(60));
-  console.log(`\n✅ Total: ${skills.length} skill${skills.length !== 1 ? 's' : ''} disponible${skills.length !== 1 ? 's' : ''}\n`);
+  
+  const plural = skills.length !== 1 ? 's' : '';
+  console.log(`\n✅ Total: ${skills.length} skill${plural} disponible${plural}\n`);
 }
 
 main().catch((err) => {
