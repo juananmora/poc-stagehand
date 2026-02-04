@@ -85,6 +85,7 @@ my-stagehand-app/
 | Command | Description |
 |---------|-------------|
 | `npm start` | Run the main automation script |
+| `npm run list-skills` | List all available skills in `.cursor/skills/` |
 | `npm test` | Run Playwright test suite |
 | `npm run test:headed` | Run tests with visible browser |
 | `npm run test:debug` | Run tests in debug mode |

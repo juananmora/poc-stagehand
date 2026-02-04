@@ -4,6 +4,7 @@
   "scripts": {
     "build": "node ./node_modules/typescript/bin/tsc",
     "start": "node ./node_modules/tsx/dist/cli.mjs index.ts",
+    "list-skills": "node ./node_modules/tsx/dist/cli.mjs list-skills.ts",
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
